@@ -47,7 +47,7 @@ fi
 
 info "Creating backup"
 TIME_BACK_UP="$(date +%s.%N)"
-$BACKUP_FILENAME_WITH_DATE_WITH_DATE="$(date +%Y-%m-%dT%H-%M-%S)"
+BACKUP_FILENAME_WITH_DATE="backup-$(date +%Y-%m-%dT%H-%M-%S).tar"
 tar -czvf "$BACKUP_FILENAME_WITH_DATE" $BACKUP_SOURCES # allow the var to expand, in case we have multiple sources
 BACKUP_SIZE="$(du --bytes $BACKUP_FILENAME_WITH_DATE | sed 's/\s.*$//')"
 TIME_BACKED_UP="$(date +%s.%N)"

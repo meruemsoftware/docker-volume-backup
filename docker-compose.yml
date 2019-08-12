@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  backup:
+    image: backup
+    volumes:
+      - /Users/tamasturcsek/tmp/zippelni:/backup:ro    
+      - /Users/tamasturcsek/tmp:/archive
+    environment:
+      BACKUP_CRON_EXPRESSION: "* * * * *"
