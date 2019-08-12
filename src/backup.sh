@@ -47,8 +47,9 @@ fi
 
 info "Creating backup"
 TIME_BACK_UP="$(date +%s.%N)"
-tar -czvf "$BACKUP_FILENAME" $BACKUP_SOURCES # allow the var to expand, in case we have multiple sources
-BACKUP_SIZE="$(du --bytes $BACKUP_FILENAME | sed 's/\s.*$//')"
+$BACKUP_FILENAME_WITH_DATE_WITH_DATE="$(date +%Y-%m-%dT%H-%M-%S)"
+tar -czvf "$BACKUP_FILENAME_WITH_DATE" $BACKUP_SOURCES # allow the var to expand, in case we have multiple sources
+BACKUP_SIZE="$(du --bytes $BACKUP_FILENAME_WITH_DATE | sed 's/\s.*$//')"
 TIME_BACKED_UP="$(date +%s.%N)"
 
 if [ -S "$DOCKER_SOCK" ]; then
@@ -79,19 +80,19 @@ if [ ! -z "$AWS_S3_BUCKET_NAME" ]; then
   info "Uploading backup to S3"
   echo "Will upload to bucket \"$AWS_S3_BUCKET_NAME\""
   TIME_UPLOAD="$(date +%s.%N)"
-  aws s3 cp --only-show-errors "$BACKUP_FILENAME" "s3://$AWS_S3_BUCKET_NAME/"
+  aws s3 cp --only-show-errors "$BACKUP_FILENAME_WITH_DATE" "s3://$AWS_S3_BUCKET_NAME/"
   echo "Upload finished"
   TIME_UPLOADED="$(date +%s.%N)"
 fi
 
 if [ -d "$BACKUP_ARCHIVE" ]; then
   info "Archiving backup"
-  mv -v "$BACKUP_FILENAME" "$BACKUP_ARCHIVE/$BACKUP_FILENAME"
+  mv -v "$BACKUP_FILENAME_WITH_DATE" "$BACKUP_ARCHIVE/$BACKUP_FILENAME_WITH_DATE"
 fi
 
-if [ -f "$BACKUP_FILENAME" ]; then
+if [ -f "$BACKUP_FILENAME_WITH_DATE" ]; then
   info "Cleaning up"
-  rm -vf "$BACKUP_FILENAME"
+  rm -vf "$BACKUP_FILENAME_WITH_DATE"
 fi
 
 info "Collecting metrics"
