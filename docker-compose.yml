@@ -8,3 +8,4 @@ services:
       - /Users/tamasturcsek/tmp:/archive
     environment:
       BACKUP_CRON_EXPRESSION: "* * * * *"
+      #BACKUP_CLEANING_ENABLED: "true"

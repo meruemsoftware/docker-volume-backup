@@ -122,4 +122,12 @@ if [ ! -z "$INFLUXDB_URL" ]; then
 fi
 
 info "Backup finished"
+
+if [ "$BACKUP_CLEANING_ENABLED" == "true" ]; then
+info "Cleaning old backups"
+groovy /root/dump-cleaner.groovy /archive/ "$DAYS_TO_LEFT" "$DAY_OF_WEEK_TO_LEFT" "$DELETE_FILES_BEFORE_DAYS"
+info "Cleaning finished"
+fi
+
+
 echo "Will wait for next scheduled backup"
