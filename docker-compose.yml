@@ -2,10 +2,13 @@ version: "3"
 
 services:
   backup:
-    image: backup
+    image: meruemsoftware/backup:latest
     volumes:
       - /Users/tamasturcsek/tmp/zippelni:/backup:ro    
       - /Users/tamasturcsek/tmp:/archive
+      - ~/.ssh:/root/.ssh
     environment:
       BACKUP_CRON_EXPRESSION: "* * * * *"
+      COPY_BACKUP_TO_EXTERNAL_SERVER: "true"
+      EXTERNAL_BACKUP_SERVER_CREDENTIAL: "root@79.139.56.106"
       #BACKUP_CLEANING_ENABLED: "true"

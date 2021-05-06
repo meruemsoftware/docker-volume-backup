@@ -121,6 +121,12 @@ if [ ! -z "$INFLUXDB_URL" ]; then
     --data-binary "$INFLUX_LINE"
 fi
 
+if [ "$COPY_BACKUP_TO_EXTERNAL_SERVER" == "true" ]; then
+info "Copying backup to external server"
+tar -C / -cf - /archive/"$BACKUP_FILENAME_WITH_DATE" | ssh "$EXTERNAL_BACKUP_SERVER_CREDENTIAL" tar -C / -xvf -
+info "Copying finished"
+fi
+
 info "Backup finished"
 
 if [ "$BACKUP_CLEANING_ENABLED" == "true" ]; then
