@@ -49,6 +49,17 @@ info "Creating backup"
 TIME_BACK_UP="$(date +%s.%N)"
 BACKUP_FILENAME_WITH_DATE="backup-$(date +%Y-%m-%dT%H-%M-%S).tar"
 tar -czvf "$BACKUP_FILENAME_WITH_DATE" $BACKUP_SOURCES # allow the var to expand, in case we have multiple sources
+if [ $? -ne 0 ] && [ "$SEND_MAIL_IN_CASE_OF_BACKUP_ERROR" == "true" ]
+then
+  echo "Backup failed, sending mail"
+  DATA=$(echo "{'personalizations': [{'to': [{'email': '$EMAIL_TO'}]}],'from': {'email': '$EMAIL_FROM'},'subject': 'Sikertelen biztonsági mentés / Failed to backup','content': [{'type': 'text/plain', 'value': 'A következő fájl elkészítése sikertelen volt / Failed to create the following file: $BACKUP_FILENAME_WITH_DATE'}]}" | sed "s/'/\"/g")
+  curl --request POST \
+  --url https://api.sendgrid.com/v3/mail/send \
+  --header "Authorization: Bearer $SENDGRID_API_KEY" \
+  --header 'Content-Type: application/json' \
+  --data "$DATA"
+fi
+
 BACKUP_SIZE="$(du --bytes $BACKUP_FILENAME_WITH_DATE | sed 's/\s.*$//')"
 TIME_BACKED_UP="$(date +%s.%N)"
 
